@@ -1,0 +1,37 @@
+PARTITIONING WITH RESPECT TO A PIVOT
+
+Partitioning an array with respect to a pivot places the pivot in its correct
+position in the sorted array.
+
+- Choose a pivot (here, the first element of the array)
+- Put the pivot in its final position in the sorted array:
+	- Move all elements smaller than the pivot to the left of its final position
+	- Move all elements greater than the pivot to the right of its final position
+	- Place the pivot in its correct position
+
+QUICK SELECT ALGORITHM:
+
+We need to find the kth smallest element in the array.
+This is the same as finding the element in the (k-1)th position in the sorted array.
+
+We partition the array with respect to a pivot.
+This places the pivot at its correct location in the array.
+	
+- If pivot_idx == k-1, then after partitioning, we have found the element
+  at the (k-1)th index in the sorted array which is our answer.
+
+- If k-1 > pivot_idx, then only elements to the right of the pivot can be
+  in the (k-1)th position in the sorted array. So, we search on the right side.
+
+- If k-1 < pivot_idx, then only elements to the left of the pivot can be
+  in the (k-1)th position in the sorted array. So, we search on the left side.
+	
+- We continue this process until the pivot_idx becomes equal to k-1.
+
+Time complexity:
+
+- Best case: After each partition, the pivot divides the array in half.
+						 Time complexity: O(n) => O(n + n/2 + n/4 + ... + 1) = O(2n - 1)
+- Worst case: After each partition, the pivot is at one end of the array.
+						  Time complexity: O(n^2)
+- Average case: O(n) (just like quicksort, average case = best case)
