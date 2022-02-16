@@ -11,20 +11,22 @@
 class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
-        ListNode *node = head, *prev = nullptr;
+        ListNode *prev = nullptr;
+        ListNode *node = head;
         
         while (node != nullptr && node->next != nullptr) {
-            ListNode *next = node->next->next;
-            node->next->next = node;
+            ListNode *next = node->next;
+            
+            node->next = node->next->next;
+            next->next = node;
             
             if (prev != nullptr)
-                prev->next = node->next;
+                prev->next = next;
             else
-                head = node->next;
+                head = next;
             
             prev = node;
-            node->next = next;
-            node = next;
+            node = node->next;
         }
         
         return head;
@@ -33,19 +35,17 @@ public:
 
 /*
 node = current node (to be swapped with next node)
-next = node->next->next
+next = node->next
 prev = node->prev
 
-(prev) --> (node) --> (node->next) --> (next)
+(prev) --> (node) --> (next) --> (node->next->next)
 
 for each swap, change the following connections:
-    - node->next->next = node
-    - node->next = next
-    - prev->next = node->next
+    - node->next = node->next->next
+    - next->next = node
+    - prev->next = next
     - prev = node
 
 time complexity: O(n)
 space complexity: O(1)
-
-https://leetcode.com/problems/swap-nodes-in-pairs/
 */
