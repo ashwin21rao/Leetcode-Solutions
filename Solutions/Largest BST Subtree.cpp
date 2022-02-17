@@ -11,48 +11,41 @@
  */
 class Solution {
 public:
-    class NodeInfo {
-    public:
-        int minVal;
-        int maxVal;
-        int size;
-        
-        NodeInfo(int minVal, int maxVal, int size) 
-            : minVal(minVal), maxVal(maxVal), size(size) {
-        }
-    };
-    
-    // {min value in tree, max value in tree}, size of subtree
-    NodeInfo *dfs(TreeNode *node, int &ans) {
+    // return {min value in tree, max value in tree, size of BST}
+    vector<int> dfs(TreeNode *node, int &max_size) {
+        // nullptr is BST of size 0
         if (node == nullptr)
-            return new NodeInfo(1e9, -1e9, 0);
-        
-        // leaf node
-        if (node->left == nullptr && node->right == nullptr)
-            return new NodeInfo(node->val, node->val, 1);
-        
-        auto left_res = dfs(node->left, ans);
-        auto right_res = dfs(node->right, ans);
-        
-        // if tree rooted at node is a BST
-        if (node->val > left_res->maxVal && node->val < right_res->minVal) {
-            int size = 1 + left_res->size + right_res->size;
-            ans = max(ans, size);
-            
-            return new NodeInfo(node->left == nullptr ? node->val : left_res->minVal, 
-                                node->right == nullptr ? node->val : right_res->maxVal, 
-                                size);
+            return {INT_MAX, INT_MIN, 0};
+
+        // recurse
+        auto left_res = dfs(node->left, max_size);
+        auto right_res = dfs(node->right, max_size);
+
+        // child is not BST
+        if (left_res[2] == -1 || right_res[2] == -1)
+            return {0, 0, -1};
+
+        // node is a BST
+        if (node->val > left_res[1] && node->val < right_res[0]) {
+            int size = 1 + left_res[2] + right_res[2];
+
+            // new largest BST found
+            if (size > max_size)
+                max_size = size;
+
+            return {min(left_res[0], node->val), max(right_res[1], node->val), size};
         }
-        
-        return new NodeInfo(-1e9, 1e9, 0);
+
+        // node is not a BST
+        return {0, 0, -1};
     }
     
     int largestBSTSubtree(TreeNode* root) {
-        if (root == nullptr) return 0;
+         // size of largest BST
+        int max_size = 0;
         
-        int ans = 1;
-        dfs(root, ans);
-        return ans;
+        dfs(root, max_size);
+        return max_size;
     }
 };
 
